@@ -5,11 +5,17 @@ node{
    stage('Compile-Package'){
       // Get maven home path
       def mvnHome =  tool name: 'maven', type: 'maven' 
-      sh "${mvnHome}/bin/mvn package"
+      def mvnCMD = "${mvnHome}/bin/mvn"
+      sh "${mvnCMD} clean package"
    }
-   stage('Email Notification'){
-      mail bcc: '', body: '''Hi Welcome to jenkins email alerts
-      Thanks
-      Hari''', cc: '', from: '', replyTo: '', subject: 'Jenkins Job', to: 'govardhan1239@gmail.com'
+   stage('Build Docker Iamge'){
+     sh 'Docker build -t moolegovardhan/myapp:2.0.0 .'
    }
+   stage('push Docker Iamge'){
+      withCredentials([string(credentialsId: 'dockerpwd', variable: 'dockerHubPwd')]) {
+         sh "docker login -u moolegovardhan -p ${dockerHubPwd}"
+      }
+      sh 'docker push moolegovardhan/myapp:2.0.0 .'
+   }
+   
 }
