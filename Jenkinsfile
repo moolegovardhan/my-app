@@ -9,7 +9,7 @@ node{
       sh "${mvnCMD} clean package"
    }
    stage('Build Docker Iamge'){
-     sh 'Docker build -t moolegovardhan/myapp:2.0.0 .'
+     sh 'docker build -t moolegovardhan/myapp:2.0.0 .'
    }
    stage('push Docker Iamge'){
       withCredentials([string(credentialsId: 'dockerpwd', variable: 'dockerHubPwd')]) {
